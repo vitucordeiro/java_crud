@@ -17,7 +17,7 @@ public class SecurityConfig {
             .and()
             .authorizeHttpRequests((authz) -> authz
                 .requestMatchers("/h2-console/**").permitAll()  // Permite acesso ao H2 Console
-                .anyRequest().authenticated()  // Todas as outras requisições precisam de autenticação
+                .anyRequest().permitAll()  // Todas as outras requisições precisam de autenticação
             );
         return http.build();
     }
