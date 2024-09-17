@@ -2,10 +2,24 @@ package com.example.demo.entities;
 import java.io.Serializable;
 import java.util.Objects;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+
+//Tranforma a classe em um entidade -> associando a um DB
+@Entity
+//Dita o nome da tabela da entidade
+@Table(name = "tb_category")
 // Serializable -> utilizado para que o objeto java possa ser convertido em uma sequencia de Bytes
 public class Category implements Serializable {
     
     private static final long serialVersionUID = 1L;
+    
+    //Criando um ID autoincrementável
+    @Id
+    @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Long id;
     private String name;
 
