@@ -1,10 +1,12 @@
 package com.example.demo.services;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.demo.dto.CategoryDTO;
 import com.example.demo.entities.Category;
 import com.example.demo.repository.CategoryRepository;
 
@@ -15,8 +17,14 @@ public class CategoryService {
     @Autowired // Injetando uma instância de um componente que é gerenciada pelo Spring
     private CategoryRepository repository;
 
-    public List<Category> findAll(){
-        return repository.findAll();
+    public List<CategoryDTO> findAll(){
+        List<Category> list = repository.findAll();
+        List<CategoryDTO> listDto = new ArrayList<>();
+        for (Category category : list ){
+            listDto.add(new CategoryDTO(category));
+        }
+        return listDto;
+
     }
 
 }
