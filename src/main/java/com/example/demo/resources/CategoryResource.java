@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.demo.entities.Category;
+import com.example.demo.dto.CategoryDTO;
 import com.example.demo.services.CategoryService;
 
 // Annotation -> configura uma classe em um recurso Rest 
@@ -23,8 +23,8 @@ public class CategoryResource { //Se o recurso tem relação com entidade ->enti
 
     // Encapsula uma resposta HTTP -> Generic
     @GetMapping()
-    public ResponseEntity<List<Category>> findAll(){
-       List<Category> list = service.findAll();
+    public ResponseEntity<List<CategoryDTO>> findAll(){
+       List<CategoryDTO> list = service.findAll();
        return ResponseEntity.ok().body(list);
     }
 
