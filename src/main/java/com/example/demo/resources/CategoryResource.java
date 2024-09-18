@@ -43,6 +43,7 @@ public class CategoryResource { //Se o recurso tem relação com entidade ->enti
     @PostMapping
     public ResponseEntity<CategoryDTO> insertCategory(@RequestBody CategoryDTO dto){
         dto = service.insert(dto);
+        // TODO: URI is to ? 
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(dto.getId()).toUri();
         return ResponseEntity.created(uri).body(dto);
     }
