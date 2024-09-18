@@ -11,7 +11,9 @@ import org.springframework.transaction.annotation.Transactional;
 import com.example.demo.dto.CategoryDTO;
 import com.example.demo.entities.Category;
 import com.example.demo.repository.CategoryRepository;
-import com.example.demo.services.exceptions.EntityNotFoundException;
+import com.example.demo.services.exceptions.ResourceNotFoundException;
+
+import jakarta.persistence.EntityNotFoundException;
 
 
 // Registra um componente como sendo injetável pelo Spring -> Habilita a DI
@@ -37,7 +39,7 @@ public class CategoryService {
         
         // O método orElseThrow conseguimos retornar outro valor se for nulo
         // Utilizei um Exception personalizado que criei como subpacote da camada services
-        Category entity = obj.orElseThrow( () -> new EntityNotFoundException("Entity not found"));
+        Category entity = obj.orElseThrow( () -> new ResourceNotFoundException("Entity not found"));
         return new CategoryDTO(entity);
     }
     @Transactional
@@ -46,6 +48,18 @@ public class CategoryService {
         entity.setName(dto.getName());
         entity = repository.save(entity);
         return new CategoryDTO(entity);
+    }
 
+    @Transactional
+    public CategoryDTO update(Long id,CategoryDTO dto){
+        try{
+            Category entity = repository.getReferenceById(id);
+            entity.setName(dto.getName());
+            entity = repository.save(entity);
+            return new CategoryDTO(entity);
+        } 
+        catch(EntityNotFoundException e){
+            throw  new ResourceNotFoundException("Id not found:" + id);
+        }
     }
 }
