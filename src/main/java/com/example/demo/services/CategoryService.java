@@ -5,12 +5,15 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.demo.dto.CategoryDTO;
 import com.example.demo.entities.Category;
 import com.example.demo.repository.CategoryRepository;
+import com.example.demo.services.exceptions.DatabaseException;
 import com.example.demo.services.exceptions.ResourceNotFoundException;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -59,7 +62,22 @@ public class CategoryService {
             return new CategoryDTO(entity);
         } 
         catch(EntityNotFoundException e){
-            throw  new ResourceNotFoundException("Id not found:" + id);
+            throw new ResourceNotFoundException("Id not found:" + id);
+        }
+    }
+    //Transactional não é utilizado, pois queremos retornar uma exception do BD
+    public void delete(Long id) {
+        try {
+            if (!repository.existsById(id)){
+                throw new ResourceNotFoundException("Id not found" + id);  // Caso o id não exista, lança uma exceção personalizada
+            }
+            repository.deleteById(id);
+        } 
+        catch (EmptyResultDataAccessException e) {
+            throw new ResourceNotFoundException("Id not found" + id);
+        }
+        catch (DataIntegrityViolationException e) { 
+            throw new DatabaseException("Integrity violation");
         }
     }
 }
