@@ -1,12 +1,11 @@
 package com.example.demo.services;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,9 +26,9 @@ public class CategoryService {
     private CategoryRepository repository;
 
     @Transactional(readOnly = true)
-    public List<CategoryDTO> findAll(){
-        List<Category> list = repository.findAll();
-        return list.stream().map( x -> new CategoryDTO(x)).collect(Collectors.toList());
+    public Page<CategoryDTO> findAllPaged(PageRequest pageRequest){
+        Page<Category> rawPage = repository.findAll(pageRequest);
+        return rawPage.map( x -> new CategoryDTO(x));
     }
 
     @Transactional(readOnly = true)
@@ -69,13 +68,11 @@ public class CategoryService {
     public void delete(Long id) {
         try {
             if (!repository.existsById(id)){
-                throw new ResourceNotFoundException("Id not found" + id);  // Caso o id não exista, lança uma exceção personalizada
+                throw new ResourceNotFoundException("Id not found: " + id);  // Caso o id não exista, lança uma exceção personalizada
             }
             repository.deleteById(id);
         } 
-        catch (EmptyResultDataAccessException e) {
-            throw new ResourceNotFoundException("Id not found" + id);
-        }
+        
         catch (DataIntegrityViolationException e) { 
             throw new DatabaseException("Integrity violation");
         }
