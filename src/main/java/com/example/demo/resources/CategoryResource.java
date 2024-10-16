@@ -25,7 +25,7 @@ import com.example.demo.services.CategoryService;
 // Annotation -> configura uma classe em um recurso Rest 
 @RestController
 // Configura o caminho da rota
-@RequestMapping(value = "/categories")
+@RequestMapping(value = "/v1/categories")
 // Implementa o controlador REST
 public class CategoryResource { //Se o recurso tem relação com entidade ->entitieName+Resource
 
