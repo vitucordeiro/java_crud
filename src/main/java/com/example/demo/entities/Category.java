@@ -1,7 +1,9 @@
 package com.example.demo.entities;
 import java.io.Serializable;
+import java.time.Instant;
 import java.util.Objects;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -23,14 +25,29 @@ public class Category implements Serializable {
     private Long id;
     private String name;
 
+    @Column(columnDefinition= "TIMESTAMP WITHOUT TIME ZONE")
+    private Instant created_At;
+
+    @Column(columnDefinition= "TIMESTAMP WITHOUT TIME ZONE")
+    private Instant updated_At;
+
     public Category(){}
     
-    public Category(Long id, String name){
+    public Category(Long id, String name, Instant created_At ){
         this.id = id;
         this.name = name;
+        this.created_At = created_At;
+        this.updated_At = created_At;
     }
 
 
+    public Instant getUpdated_At(){
+        return this.updated_At;
+    }
+    public Instant getCreated_At(){
+        return this.created_At;
+    }
+    
     public Long getId() {
         return this.id;
     }
