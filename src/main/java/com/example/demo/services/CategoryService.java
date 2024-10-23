@@ -77,7 +77,7 @@ public class CategoryService {
             throw new ResourceNotFoundException("Id not found" + id);
         }
         catch (DataIntegrityViolationException e) { 
-            throw new DatabaseException("Integrity violation");
+            throw new DatabaseException("Cannot delete category. It is being referenced by other entities.");
         }
     }
 }
