@@ -2,8 +2,11 @@ package com.example.demo.services;
 
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -21,6 +24,7 @@ import jakarta.persistence.EntityNotFoundException;
 // Registra um componente como sendo injetável pelo Spring -> Habilita a DI
 @Service
 public class ProductService {
+    private static final Logger logger = LoggerFactory.getLogger(ProductService.class);
 
     @Autowired // Injetando uma instância de um componente que é gerenciada pelo Spring
     private ProductRepository repository;
@@ -66,14 +70,16 @@ public class ProductService {
     }
     //Transactional não é utilizado, pois queremos retornar uma exception do BD
     public void delete(Long id) {
+        logger.info("Attempting to delete product with id: {}", id);
+        if (!repository.existsById(id)) {
+            logger.error("Product with id: {} not found", id);
+            throw new ResourceNotFoundException("Id not found: " + id);
+        }
         try {
-            if (!repository.existsById(id)){
-                throw new ResourceNotFoundException("Id not found: " + id);  // Caso o id não exista, lança uma exceção personalizada
-            }
             repository.deleteById(id);
-        } 
-        
-        catch (DataIntegrityViolationException e) { 
+            logger.info("Product with id: {} deleted successfully", id);
+        } catch (DataIntegrityViolationException e) { 
+            logger.error("Integrity violation when deleting product with id: {}", id);
             throw new DatabaseException("Integrity violation");
         }
     }
